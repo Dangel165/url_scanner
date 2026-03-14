@@ -1,244 +1,108 @@
-# URL Security Scanner CLI
+# URL 보안 스캐너 CLI
 
-Cloudflare + VirusTotal + Multi-API Security Analysis Tool
+Cloudflare + VirusTotal + 다중 API 보안 분석 도구
 
 [![Python 3.6+](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 > 교육 및 보안 연구 목적의 URL 보안 분석 도구
 
-## Features
+## 주요 기능
 
-### 1. URL Structure Analysis
-- HTTPS usage verification
-- Suspicious character detection
-- Direct IP address usage check
-- Suspicious TLD detection (.tk, .ml, .ga, etc.)
-- URL length and subdomain count analysis
+### 1. URL 구조 분석
+- HTTPS 사용 여부 확인
+- 의심스러운 문자 탐지
+- 직접 IP 주소 사용 확인
+- 의심스러운 TLD 탐지 (.tk, .ml, .ga 등)
+- URL 길이 및 서브도메인 개수 분석
 
-### 2. DNS Records Check
-- A record lookup
-- MX record verification
-- DNS record existence validation
+### 2. DNS 레코드 검사
+- A 레코드 조회
+- MX 레코드 확인
+- DNS 레코드 존재 여부 검증
 
-### 3. SSL/TLS Certificate Check
-- Certificate validity verification
-- Issuer information lookup
-- Expiration date check
-- Certificate version inspection
+### 3. SSL/TLS 인증서 검사
+- 인증서 유효성 확인
+- 발급자 정보 조회
+- 만료일 확인
+- 인증서 버전 검사
 
-### 4. Malicious Pattern Detection
-- Phishing keyword detection (login, verify, banking, etc.)
-- Suspicious pattern inspection
-- Random string detection
+### 4. 악성 패턴 탐지
+- 피싱 키워드 탐지 (login, verify, banking 등)
+- 도박/불법 사이트 키워드 탐지 (한글 + 영문)
+- 성인 콘텐츠 키워드 탐지
+- 의심스러운 패턴 검사
 
-### 5. Cloudflare DNS Filtering
-- Uses Cloudflare 1.1.1.2 (Malware Blocking DNS)
-- Automatic blocked site detection
-- Real-time filtering verification
+### 5. Cloudflare DNS 필터링
+- Cloudflare 1.1.1.2 (악성코드 차단 DNS) 사용
+- 차단된 사이트 자동 감지
+- 실시간 필터링 확인
 
-## Installation
+### 6. VirusTotal 검사
+- 70개 이상의 보안 엔진으로 URL 검사
+- 악성/의심 사이트 탐지율 확인
+- 자동 URL 제출 기능
 
-### Automatic Installation
+## 설치
+
+### 자동 설치
 ```bash
 install.bat
 ```
 
-### Manual Installation
+### 수동 설치
 ```bash
 pip install -r requirements.txt
 ```
 
-## Usage
+## 사용법
 
-### Basic Usage
+### 기본 사용
 ```bash
 python scanner_cli.py https://example.com
 ```
 
-### Using Batch File
+### 배치 파일 사용
 ```bash
 run.bat https://example.com
 ```
 
-### Without Protocol
+### 프로토콜 없이 사용
 ```bash
 python scanner_cli.py example.com
 ```
 
-### Verbose Mode
+### VirusTotal API 키와 함께 사용
+```bash
+python scanner_cli.py https://example.com --vt-key your_api_key_here
+```
+
+### 상세 모드
 ```bash
 python scanner_cli.py https://example.com -v
 ```
 
-## Examples
+## VirusTotal API 설정
 
-### Safe Site
+### API 키 발급받기
+
+1. [VirusTotal](https://www.virustotal.com) 방문
+2. 무료 계정 가입
+3. 프로필 설정으로 이동
+4. API Key 섹션에서 API 키 복사
+
+### API 키 설정 방법
+
+**방법 1: 환경변수 (권장)**
 ```bash
-python scanner_cli.py https://google.com
+# Windows
+set VT_API_KEY=your_api_key_here
+
+# Linux/Mac
+export VT_API_KEY=your_api_key_here
 ```
 
-### Suspicious Site
+**방법 2: 명령줄 옵션**
 ```bash
-python scanner_cli.py http://suspicious-site.tk
+python scanner_cli.py https://example.com --vt-key your_api_key_here
 ```
-
-### Dangerous Site
-```bash
-python scanner_cli.py http://192.168.1.1/phishing
-```
-
-## Risk Levels
-
-- **SAFE (0-19)**: Safe site
-- **LOW (20-39)**: Low risk
-- **MEDIUM (40-59)**: Medium risk
-- **HIGH (60-100)**: High risk
-
-## Detailed Checks
-
-### URL Structure Analysis
-```
-- No HTTPS: +30 points
-- Suspicious characters: +20 points
-- IP address usage: +25 points
-- Suspicious TLD: +20 points
-- Long URL (100+ chars): +15 points
-- Many subdomains (3+): +10 points
-```
-
-### Cloudflare DNS Filtering
-```
-- Cloudflare 1.1.1.2 DNS usage
-- Blocked site: +80 points
-- NXDOMAIN: +70 points
-```
-
-### Malicious Patterns
-```
-- Phishing keyword found: +10 points per keyword
-- Suspicious pattern: +15 points per pattern
-```
-
-## Cloudflare Integration
-
-### Cloudflare DNS Servers
-- **1.1.1.2**: Malware blocking
-- **1.0.0.2**: Backup DNS
-
-### How It Works
-1. Extract domain from input URL
-2. Query A record via Cloudflare DNS
-3. If blocked, returns 0.0.0.0 or 127.0.0.1
-4. Reflect blocking status in results
-
-## Requirements
-
-- Python 3.6+
-- dnspython
-- requests
-- colorama
-
-## Output Example
-
-```
-╔═══════════════════════════════════════════════════════════╗
-║                                                           ║
-║           URL Security Scanner v1.0                       ║
-║        Cloudflare + Multi-API Analysis Tool               ║
-║                                                           ║
-╚═══════════════════════════════════════════════════════════╝
-
-Target URL: https://example.com
-
-============================================================
-[*] URL Structure Analysis
-============================================================
-  Protocol: HTTPS
-  Domain: example.com
-  Path: /
-  URL Length: 20
-  Subdomain Count: 1
-
-  Risk Score: 0/100
-
-============================================================
-[*] DNS Records Check
-============================================================
-  A Records: 93.184.216.34
-  MX Records: 0 found
-
-  Risk Score: 0/100
-
-============================================================
-[*] SSL/TLS Certificate Check
-============================================================
-  Issuer: DigiCert Inc
-  Subject: example.com
-  Expires: Dec 31 23:59:59 2024 GMT
-  Days Until Expiry: 250
-
-  Risk Score: 0/100
-
-============================================================
-[*] Malicious Pattern Detection
-============================================================
-  Suspicious Keywords: None detected
-
-  Risk Score: 0/100
-
-============================================================
-[*] Cloudflare DNS Filtering Check
-============================================================
-  Cloudflare Status: Passed - Not blocked
-
-  Risk Score: 0/100
-
-============================================================
-[*] FINAL ANALYSIS RESULTS
-============================================================
-
-██████████████████████████████████████████████████
-
-  Risk Level: SAFE
-  Risk Score: 0/100
-
-============================================================
-[*] RECOMMENDATIONS
-============================================================
-
-  ✓ This site appears to be safe.
-
-Scan completed at: 2024-01-15 10:30:45
-```
-
-## Troubleshooting
-
-### DNS Resolution Error
-- Check internet connection
-- Verify DNS server accessibility
-- Try different DNS server
-
-### SSL Certificate Error
-- Site may not support HTTPS
-- Certificate may be expired
-- Firewall may be blocking connection
-
-### Timeout Error
-- Site may be down
-- Network connection may be slow
-- Increase timeout value
-
-## Notes
-
-- Analysis results are for reference only and may not be 100% accurate
-- Always exercise caution when visiting unknown sites
-- Do not enter personal information on suspicious sites
-
-## License
-
-Free to use and modify
-
----
-
-**Warning**: Use this tool responsibly. Do not use it for illegal purposes.
